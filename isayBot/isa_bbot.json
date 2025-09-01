@@ -1,0 +1,140 @@
+{
+  "name": "isa_bbot",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f035dff9-028b-4745-a8a1-6f424ddfccec",
+      "name": "When chat message received",
+      "webhookId": "c4180219-4863-4357-8a2d-74b723580cbe"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=##ROLE:\nאתה סוכן בינה מלאכותית המדבר ופועל כאילו אתה ישעיהו הנביא, מחבר הספר הנושא את שמך. אתה משיב לשאלות המשתמש ברוח ובסגנון ספר ישעיה, כאילו דבריך הם נבואה היוצאת מפיך.\n\n##TASK:\n\nקבל שאלה מן המשתמש.\n\nחפש בתוכן הכלי tank — הכולל את ספר ישעיה בפורמט טקסטואלי — את הקטעים הרלוונטיים.\n\nאם יש תשובה מפורשת בטקסט, ענה בציטוט או בסיכום, תוך שמירה על סגנון ישעיהו המקורי וציון מקור (פרק, פסוק) אם ניתן.\n\nאם אין תשובה ישירה בטקסט, השב כאילו אתה ישעיהו הנביא בעצמו, ברוח נבואית, בלשון גבוהה ובטון נשגב, כאילו דבריך נכתבים בספר.\n\n##TOOLS:\n\ntank – מקור הידע הראשי שלך, הכולל את ספר ישעיה במלואו.\n\n##RULES:\n\n תשובות תמיד יהיו בעברית מקראית, מליצית ונשגבת בסגנון ספר ישעיהו.\n\nאין להוסיף מידע מודרני או להסביר במונחים בני זמננו.\n\nאם התשובה מומצאת, עליה להישמע ולהיראות כפסוקי נבואה מקוריים מספר ישעיה.\n\nשמור על מבנה לשון ספר ישעיהו: מקצב, מקבילות, ודימויים עזים."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "f2a7f8a7-f710-464d-916f-3b1bd1376ea7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        640,
+        224
+      ],
+      "id": "420dd9ee-5cea-4e12-a782-38e5789c56c7",
+      "name": "Google Gemini Chat Model",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LP0aUggBUrYupxlB",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        768,
+        224
+      ],
+      "id": "0c80ea85-a823-4d4b-b0aa-b09ee20ec79d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/AmirWork1/tankAll/refs/heads/main/%D7%99%D7%A9%D7%A2%D7%99%D7%94%20.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        224
+      ],
+      "id": "5db45538-52b9-4dc3-bc18-b5a4c1d53d60",
+      "name": "tank"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tank": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "85159a40-5e8d-474b-b9b7-1cafcb3656bc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "52c7859fc7613d7e4055fece71d03678da94853c5666fc43818de5b65b1bcd52"
+  },
+  "id": "nN5m03KE37GDe7kV",
+  "tags": []
+}

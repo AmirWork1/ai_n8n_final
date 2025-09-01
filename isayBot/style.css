@@ -1,0 +1,101 @@
+/* בסיס עמוד */
+:root {
+  --sky-top: #77b9ff;     /* כחול עליון */
+  --sky-bottom: #bfe4ff;  /* כחול בהיר באופק */
+  --dune-1: #efd9a6;      /* דיונה קדמית */
+  --dune-2: #e8cf98;      /* דיונה שנייה */
+  --dune-3: #ddc487;      /* דיונה רחוקה */
+  --rock: rgba(30,20,10,0.65); /* כהיית מערה */
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  /* לא נוגעים בסגנון/מחלקות של הצ'אט עצמו */
+  overflow-x: hidden;
+}
+
+/* מכולה לרקע; הצ'אט יישב מעל כי הוא מגיע מה־CDN עם z-index גבוה */
+.scene {
+  position: relative;
+  min-height: 100dvh;
+  isolation: isolate; /* שכבות נקיות */
+  
+  /* שכבות רקע:
+     1) שמיים
+     2) הרים/אופק עדין
+     3) כמה דיונות בעומק שדה
+  */
+  background:
+    /* קו אופק־הררי רך */
+    radial-gradient(120% 60% at 50% 75%, #a7c7e6 0%, transparent 60%) no-repeat,
+    /* דיונה רחוקה */
+    radial-gradient(120% 60% at 30% 95%, var(--dune-3) 0 35%, transparent 36%) no-repeat,
+    /* דיונה בינונית */
+    radial-gradient(110% 60% at 70% 100%, var(--dune-2) 0 40%, transparent 41%) no-repeat,
+    /* דיונה קדמית */
+    radial-gradient(120% 65% at 50% 110%, var(--dune-1) 0 45%, transparent 46%) no-repeat,
+    /* שמיים */
+    linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-bottom) 70%, #f6e9bf 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+}
+
+/* “מסגרת מערה” כהה מסביב, עם פתח במרכז.
+   pointer-events:none כדי שלא ישפיע על אינטראקציות (כולל הצ'אט).
+   z-index: 0 כדי שהצ'אט שמעל (בדר"כ z-index גבוה) יישאר נקי מגוון. */
+.scene::after {
+  content: "";
+  position: fixed; /* מכסה את כל המסך גם בגלילה */
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  /* חורים שקופים ("פתחי מערה") וכהות בקצוות */
+  background:
+    /* הצללות “סלעיות” בצדדים */
+    radial-gradient(80vmax 60vmax at -10% 20%, var(--rock) 20%, transparent 55%) no-repeat,
+    radial-gradient(80vmax 60vmax at 110% 30%, var(--rock) 20%, transparent 55%) no-repeat,
+    radial-gradient(90vmax 70vmax at 50% 120%, var(--rock) 25%, transparent 60%) no-repeat,
+    /* וינייט מרכזי עדין */
+    radial-gradient(100vmax 100vmax at 50% 50%, transparent 55%, rgba(0,0,0,0.35) 90%);
+}
+
+/* כותרת – קצת קונטרסט כדי “לשבת” יפה על השמיים */
+.scene h1 {
+  margin: 0;
+  padding: 4rem clamp(1rem, 3vw, 3rem);
+  color: #1f2b3a;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+  font-family: "Rubik", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* רספונסיביות קלה לכותרת */
+@media (max-width: 480px) {
+  .scene h1 {
+    padding-top: 3rem;
+    font-size: 1.4rem;
+    text-align: center;
+  }
+}
+.scene {
+  display: flex;
+  justify-content: center;  /* מרכז לרוחב */
+  align-items: center;      /* מרכז לגובה */
+  min-height: 100vh;        /* כל גובה החלון */
+}
+
+.scene h1 {
+  margin: 0;
+}
+
+

@@ -1,0 +1,348 @@
+{
+  "name": "hapy_brit",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "מחולל ברכות יום הולדת",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "שם המברך"
+            },
+            {
+              "fieldLabel": "שם המתברך"
+            },
+            {
+              "fieldLabel": "ברכה לבן או לבת?"
+            },
+            {
+              "fieldLabel": "הדואר האלקטרוני של מקבל הברכה",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "דברים שמקבל הברכה אוהב",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": true
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -672,
+        0
+      ],
+      "id": "ec557097-f6f0-45a8-993f-6d1bcea709a2",
+      "name": "On form submission",
+      "webhookId": "94c1c684-a293-4551-a28d-0f2d7b01c076"
+    },
+    {
+      "parameters": {
+        "subject": "=ברכה מ {{ $json.fields.Name }}",
+        "textContent": "=קבלת ברכת יום הולדת מ:{{ $json.fields.Name }}\nוזו היא הברכה:{{ $json.fields.Blessing }}",
+        "sender": "brslv1@gmail.com",
+        "receipients": "={{ $json.fields.mail }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ],
+      "id": "9b1e1fef-b49c-4061-befd-896ad548eecf",
+      "name": "Send a transactional email",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "idXrzdb8yHAGyTPS",
+          "name": "Brevo account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['שם המברך'] }}\n{{ $json['שם המתברך'] }}\n{{ $json['ברכה לבן או לבת?'] }}\n{{ $json['דברים שמקבל הברכה אוהב'] }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "אתה סופר בסגנון ש\"י עגנון.  \nתפקידך הוא לנסח ברכה אישית.  \n\nתקבל את המידע הבא:  \n- שם המברך  \n- שם המתברך  \n- מין המתברך (בן/בת)  \n- נושאים אהובים (רשימה)  \n\nהנחיות:  \n1. פתח את הברכה בנוסח עגנוני פיוטי, שבו מוזכר שם המברך המברך את שם המתברך.  \n2. אם המתברך הוא בן – השתמש בלשון זכר. אם המתברכת היא בת – השתמש בלשון נקבה.  \n3. שלב בברכה את הנושאים האהובים כך שייראו טבעיים, כאילו הם חלק מן החיים והסיפור.  \n4. סיים בברכה חמה ומלאת נשמה, בנוסח המזכיר כתיבה של ש\"י עגנון – עשיר בלשון, עם צליל מסורתי וחם.  \n5. הקפד שהברכה תהיה מקורית, פיוטית, ולא רשימתית.  \n\nדוגמה לקלט:  \n- שם מברך: יוסף  \n- שם מתברך: דניאל  \n- מין: בן  \n- נושאים: ים, מוזיקה, ספרים  \n\nדוגמה לפלט (בקיצור):  \n\"יוסף מברך את דניאל, אשר ליבו פתוח כים רחב... וברכתו שיר מתנגן לו בין ספרים ומילים...\"  \n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -448,
+        128
+      ],
+      "id": "50123921-652c-4031-9c46-d1aeec8f02c5",
+      "name": "Basic LLM Chain",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "query": " SELECT * FROM input1 LEFT JOIN input2 ON input1.name = input2.id\n\n",
+        "options": {
+          "emptyQueryResult": "=empty"
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "cb4a5b41-62ed-4be4-8cf8-3e814d94d2eb",
+      "name": "Merge",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        352
+      ],
+      "id": "1da1ed68-810d-48c9-8786-ee828cbc875a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wWYrE4HpTeCHOABq",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appT3hSMLF1y9NgRj",
+          "mode": "list",
+          "cachedResultName": "hapy_brit",
+          "cachedResultUrl": "https://airtable.com/appT3hSMLF1y9NgRj"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblK5RETSJLxIsHyc",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appT3hSMLF1y9NgRj/tblK5RETSJLxIsHyc"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json['שם המברך'] }}",
+            "Name of the blesser": "={{ $json['שם המתברך'] }}",
+            "gender": "={{ $json['ברכה לבן או לבת?'] }}",
+            "The subject of the blessing": "={{ $json['דברים שמקבל הברכה אוהב'] }}",
+            "mail": "={{ $json['הדואר האלקטרוני של מקבל הברכה'] }}",
+            "Blessing": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Name of the blesser",
+              "displayName": "Name of the blesser",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gender",
+              "displayName": "gender",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "The subject of the blessing",
+              "displayName": "The subject of the blessing",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mail",
+              "displayName": "mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Blessing",
+              "displayName": "Blessing",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        176,
+        0
+      ],
+      "id": "61d3790a-b2d0-4140-bf4c-45a0a475e5a8",
+      "name": "Create a record",
+      "executeOnce": true,
+      "retryOnFail": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fOTylse1lShpT6ar",
+          "name": "n8n_1_p"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "הברכה נשלחה",
+        "completionMessage": "={{ $('Create a record').item.json.fields.Blessing }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        608,
+        0
+      ],
+      "id": "5d5e5043-1e3f-4e0f-a266-58bc471e25e7",
+      "name": "Form",
+      "webhookId": "ed0aae89-85e0-4ddf-942a-b21cd871c42d"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Send a transactional email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a transactional email": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "384d3c4f-7a7c-4e35-af0b-27516cf73471",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a73a3d7ac09cd862dcbd43cfaa5a411b0dfc9eddea37604d3cdf1019ac2649e3"
+  },
+  "id": "EHeaJFdBmIkGisD5",
+  "tags": []
+}
