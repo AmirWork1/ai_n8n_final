@@ -6,7 +6,7 @@ const init = () =>{
 
     https://internal-hideously-newt.ngrok-free.app/webhook/c4180219-4863-4357-8a2d-74b723580cbe/chat
     createChat({
-	webhookUrl: `./functions/proxy`,
+	webhookUrl:" https://internal-hideously-newt.ngrok-free.app/webhook/c4180219-4863-4357-8a2d-74b723580cbe/chat",
 	webhookConfig: {
 		method: 'POST',
 		headers: {}
@@ -35,4 +35,5 @@ const init = () =>{
 	enableStreaming: false,
 });
 }
+
 init();
